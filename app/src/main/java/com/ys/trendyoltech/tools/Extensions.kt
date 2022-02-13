@@ -13,7 +13,6 @@ fun Context.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) {
 
 //inline fun <reified T> T(): String = T::class.java.simpleName
 
-
 fun log(a: Any? = null, context: Context? = null, tv: TextView? = null) {
     val msg = "${a?.toString() ?: ""}: ${a ?: ""}"  //${Throwable().stackTrace[1]}  ->
     when (a) {
@@ -46,7 +45,6 @@ fun Any?.lt(a: Any? = null, context: Context? = null, tv: TextView? = null) {
     l(a, context, tv)
     context?.toast(a.toString())
 }
-
 
 fun Any?.showErrorMsg(msg: String) {
     when (this) {

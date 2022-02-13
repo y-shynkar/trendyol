@@ -4,15 +4,9 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.ys.trendyoltech.retrofit.APIClient
-import com.ys.trendyoltech.retrofit.ApiService
-import com.ys.trendyoltech.retrofit.BASE_URL
 import com.ys.trendyoltech.tools.l
 import com.ys.trendyoltech.tools.showErrorMsg
 import kotlinx.coroutines.*
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 @DelicateCoroutinesApi
@@ -29,12 +23,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         findViewById<TextView>(R.id.tvTitle).setOnClickListener {
             GlobalScope.launch(Dispatchers.Default) {
                 withContext(Dispatchers.IO) {
-//                    try {
-                    val res = APIClient.retrofit.getWidgets().execute()
-                    l(res.body())
-//                    } catch (e: Exception) {
-//                        showErrorMsg("${e.message}}")
-//                    }
+                    try {
+                        val res = APIClient.retrofit.getWidgets().execute()
+                        l(res.body())
+                    } catch (e: Exception) {
+                        showErrorMsg("${e.message}}")
+                    }
                 }
             }
         }
