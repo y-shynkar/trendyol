@@ -2,11 +2,13 @@ package com.ys.trendyoltech
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.ys.trendyoltech.recycler.RAdapter
+import com.ys.trendyoltech.recycler.SliderAdapter
 import com.ys.trendyoltech.retrofit.APIClient
+import com.ys.trendyoltech.retrofit.BannerContents
 import com.ys.trendyoltech.retrofit.JsonData
 import com.ys.trendyoltech.retrofit.Widgets
 import com.ys.trendyoltech.tools.showErrorMsg
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     lateinit var recycler: RecyclerView
-    var adapter = RAdapter(emptyList())
+    lateinit var adapter: RAdapter
     var widgetsList: List<Widgets> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateWidgets() {
-
         APIClient.retrofit.getWidgets().enqueue(object : Callback<JsonData> {
             override fun onResponse(call: Call<JsonData>, response: Response<JsonData>) {
                 widgetsList = response.body()?.widgets ?: return
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                 adapter = RAdapter(widgetsList)
                 recycler.layoutManager = LinearLayoutManager(this@MainActivity)
                 recycler.adapter = adapter
-                recycler.itemAnimator = DefaultItemAnimator()
+//                recycler.itemAnimator = DefaultItemAnimator()
                 adapter.notifyItemInserted(widgetsList.size - 1)
             }
 

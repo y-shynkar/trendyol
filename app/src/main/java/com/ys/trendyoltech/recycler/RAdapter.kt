@@ -6,55 +6,76 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.squareup.picasso.Picasso
 import com.ys.trendyoltech.R
 import com.ys.trendyoltech.retrofit.Widgets
 
 
-class RAdapter(private var dataSet: List<Widgets>) : RecyclerView.Adapter<RAdapter.ViewHolder>() {
+class RAdapter(private var dataSet: List<Widgets>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var mViewPager: ViewPager? = null
+    var imagesList = emptyList<String>()
+    var mViewPagerAdapter: SliderAdapter? = null
 
     enum class DispType { SINGLE, CAROUSEL, SLIDER, LISTING }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class CarouselViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.tvTitle)
-        val image: ImageView = view.findViewById(R.id.image)
+        val image: ImageView = view.findViewById(R.id.ivBanner)
+        val viewPager: ViewPager = view.findViewById(R.id.viewPager)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return try {
-            DispType.valueOf(dataSet[position].displayType).ordinal
-        } catch (e: Exception) {
-            DispType.SINGLE.ordinal
+    inner class SliderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val textView: TextView = view.findViewById(R.id.tvTitle)
+        val image: ImageView = view.findViewById(R.id.ivBanner)
+        val viewPager: ViewPager = view.findViewById(R.id.viewPager)
+    }
+
+    inner class ListingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val textView: TextView = view.findViewById(R.id.tvTitle)
+    }
+
+    inner class SingleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val textView: TextView = view.findViewById(R.id.tvTitle)
+        val image: ImageView = view.findViewById(R.id.ivBanner)
+    }
+
+
+    override fun onCreateViewHolder(vg: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            DispType.CAROUSEL.ordinal -> CarouselViewHolder(LayoutInflater.from(vg.context).inflate(R.layout.widget_carousel, vg, false))
+            DispType.SLIDER.ordinal -> SliderViewHolder(LayoutInflater.from(vg.context).inflate(R.layout.widget_slider, vg, false))
+            DispType.LISTING.ordinal -> ListingViewHolder(LayoutInflater.from(vg.context).inflate(R.layout.widget_listing, vg, false))
+            else -> SingleViewHolder(LayoutInflater.from(vg.context).inflate(R.layout.widget_single, vg, false))
         }
     }
 
-    override fun onCreateViewHolder(vg: ViewGroup, viewType: Int): ViewHolder {
-        val resID = when (viewType) {
-            DispType.CAROUSEL.ordinal -> R.layout.widget_carousel
-            DispType.SLIDER.ordinal -> R.layout.widget_slider
-            DispType.LISTING.ordinal -> R.layout.widget_listing
-            else -> R.layout.widget_single
-        }
-
-        val view = LayoutInflater.from(vg.context).inflate(resID, vg, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(vh: ViewHolder, position: Int) {
+    override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         val widget = dataSet[position]
         when (vh.itemViewType) {
-            DispType.SINGLE.ordinal -> {
-                vh.textView.text = widget.bannerContents?.firstOrNull().let { it?.title } ?: ""
-                widget.bannerContents?.firstNotNullOfOrNull { banner ->
-                    Picasso.with(vh.itemView.context)
-                        .load(banner.imageUrl)
-//                        .placeholder(R.drawable.progress_animation)
+            DispType.CAROUSEL.ordinal -> {
+                val urlList = widget.bannerContents?.mapNotNull { it.imageUrl }
+                urlList?.let { (vh as CarouselViewHolder).viewPager.adapter = SliderAdapter(vh.itemView.context, urlList) }
+            }
+            DispType.LISTING.ordinal -> {
+                (vh as ListingViewHolder).textView.text = widget.title
+            }
+            DispType.SLIDER.ordinal -> {
+                (vh as SliderViewHolder).textView.text = widget.title
+            }
+            else -> {
+                val b = widget.bannerContents?.firstNotNullOfOrNull {
+                    (vh as SingleViewHolder).textView.text = it.title
+                    Picasso
+                        .with(vh.itemView.context)
+                        .load(it.imageUrl)
                         .error(R.drawable.stub)
-                        .into(vh.image)
+                        .into((vh as SingleViewHolder).image)
                 }
             }
         }
     }
-
+    
     override fun getItemCount() = dataSet.size
 }

@@ -12,6 +12,7 @@ data class Widgets(
     @SerializedName("displayType") var displayType: String = "SINGLE",
     @SerializedName("eventKey") var eventKey: String? = null,
     @SerializedName("id") var id: Int? = null,
+    @SerializedName("title") var title: String? = null,
     @SerializedName("type") var type: String? = null,
     @SerializedName("displayCount") var displayCount: Int? = null,
     @SerializedName("displayOptions") var displayOptions: DisplayOptions? = DisplayOptions(),
