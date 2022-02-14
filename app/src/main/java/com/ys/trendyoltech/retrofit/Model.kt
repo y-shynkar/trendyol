@@ -8,8 +8,8 @@ data class JsonData(
 )
 
 data class Widgets(
-    @SerializedName("bannerContents") var bannerContents: ArrayList<BannerContents> = arrayListOf(),
-    @SerializedName("displayType") var displayType: String? = null,
+    @SerializedName("bannerContents") var bannerContents: ArrayList<BannerContents>? = null,
+    @SerializedName("displayType") var displayType: String = "SINGLE",
     @SerializedName("eventKey") var eventKey: String? = null,
     @SerializedName("id") var id: Int? = null,
     @SerializedName("type") var type: String? = null,
@@ -21,7 +21,12 @@ data class Widgets(
     @SerializedName("width") var width: Int? = null,
     @SerializedName("height") var height: Int? = null,
     @SerializedName("refreshRequired") var refreshRequired: Boolean? = null,
-)
+) {
+    override fun toString(): String {
+        return "Widgets(bannerContents=$bannerContents \n displayType='$displayType' \n id=$id \n type=$type \n " +
+                "displayCount=$displayCount \n width=$width \n height=$height)"
+    }
+}
 
 data class Pagination(
     @SerializedName("currentPage") var currentPage: Int? = null,
