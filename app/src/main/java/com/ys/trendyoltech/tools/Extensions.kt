@@ -37,8 +37,8 @@ fun Any?.lt(a: Any? = null, context: Context? = null, tv: TextView? = null) {
     context?.toast(a.toString())
 }
 
-fun Any?.showErrorMsg(msg: String) {
+fun Any?.showErrorMsg(msg: String?) {
     when (this) {
-        is Context -> toast(msg)
+        is Context -> toast(msg ?: "")
     }
 }

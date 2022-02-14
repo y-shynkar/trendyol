@@ -2,6 +2,7 @@ package com.ys.trendyoltech
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ys.trendyoltech.recycler.RAdapter
@@ -29,11 +30,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         recycler = findViewById(R.id.recycler)
-
-        loadData()
     }
 
-    private fun loadData() {
+    override fun onStart() {
+        super.onStart()
+        updateWidgets()
+    }
+
+    private fun updateWidgets() {
+
         APIClient.retrofit.getWidgets().enqueue(object : Callback<JsonData> {
             override fun onResponse(call: Call<JsonData>, response: Response<JsonData>) {
                 widgetsList = response.body()?.widgets ?: return
@@ -41,14 +46,15 @@ class MainActivity : AppCompatActivity() {
                 adapter = RAdapter(widgetsList)
                 recycler.layoutManager = LinearLayoutManager(this@MainActivity)
                 recycler.adapter = adapter
-                adapter.notifyItemInserted(widgetsList.size)
+                recycler.itemAnimator = DefaultItemAnimator()
+                adapter.notifyItemInserted(widgetsList.size - 1)
             }
 
             override fun onFailure(call: Call<JsonData>, t: Throwable) {
-                showErrorMsg(t.localizedMessage)
+                showErrorMsg(t.message)
                 CoroutineScope(Dispatchers.Default).launch {
                     delay(TimeUnit.MINUTES.toMillis(1))
-                    loadData()
+                    updateWidgets()
                 }
             }
         })

@@ -15,7 +15,7 @@ class RAdapter(private var dataSet: List<Widgets>) : RecyclerView.Adapter<RAdapt
 
     enum class DispType { SINGLE, CAROUSEL, SLIDER, LISTING }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.tvTitle)
         val image: ImageView = view.findViewById(R.id.image)
     }
@@ -28,7 +28,7 @@ class RAdapter(private var dataSet: List<Widgets>) : RecyclerView.Adapter<RAdapt
         }
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(vg: ViewGroup, viewType: Int): ViewHolder {
         val resID = when (viewType) {
             DispType.CAROUSEL.ordinal -> R.layout.widget_carousel
             DispType.SLIDER.ordinal -> R.layout.widget_slider
@@ -36,8 +36,7 @@ class RAdapter(private var dataSet: List<Widgets>) : RecyclerView.Adapter<RAdapt
             else -> R.layout.widget_single
         }
 
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(resID, viewGroup, false)
+        val view = LayoutInflater.from(vg.context).inflate(resID, vg, false)
         return ViewHolder(view)
     }
 

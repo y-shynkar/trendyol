@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:gravity="center">
-        <animated-rotate
-            android:drawable="@drawable/progress_image"
-       />
+        <animated-rotate android:drawable="@drawable/progress_image" />
     </item>
 </layer-list>

@@ -16,9 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="id"
         android:textColor="@color/cardview_dark_background"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_title_mid"
         android:textStyle="italic|bold" />
 
 </com.google.android.material.card.MaterialCardView>
