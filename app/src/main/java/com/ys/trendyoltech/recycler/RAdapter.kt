@@ -5,25 +5,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.drawToBitmap
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.squareup.picasso.Picasso
 import com.ys.trendyoltech.R
+import com.ys.trendyoltech.dialog.Dialog
 import com.ys.trendyoltech.retrofit.Widgets
 
 
 class RAdapter(private var dataSet: List<Widgets>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    var mViewPager: ViewPager? = null
-    var imagesList = emptyList<String>()
-    var mViewPagerAdapter: SliderAdapter? = null
 
     enum class DispType { SINGLE, CAROUSEL, SLIDER, LISTING }
 
     inner class CarouselViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.tvTitle)
         val image: ImageView = view.findViewById(R.id.ivBanner)
-        val viewPager: ViewPager = view.findViewById(R.id.viewPager)
+        val viewPager: ViewPager = view.findViewById<ViewPager?>(R.id.viewPager)
     }
 
     inner class SliderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -38,9 +36,11 @@ class RAdapter(private var dataSet: List<Widgets>) : RecyclerView.Adapter<Recycl
 
     inner class SingleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.tvTitle)
-        val image: ImageView = view.findViewById(R.id.ivBanner)
+        val image: ImageView = view.findViewById<ImageView?>(R.id.ivBanner)
+            .apply {
+                setOnClickListener { Dialog.show(context, textView.text.toString(), this.drawToBitmap()) }
+            }
     }
-
 
     override fun onCreateViewHolder(vg: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -65,17 +65,16 @@ class RAdapter(private var dataSet: List<Widgets>) : RecyclerView.Adapter<Recycl
                 (vh as SliderViewHolder).textView.text = widget.title
             }
             else -> {
-                val b = widget.bannerContents?.firstNotNullOfOrNull {
+                widget.bannerContents?.firstNotNullOfOrNull {
                     (vh as SingleViewHolder).textView.text = it.title
-                    Picasso
-                        .with(vh.itemView.context)
+                    Picasso.get()
                         .load(it.imageUrl)
                         .error(R.drawable.stub)
-                        .into((vh as SingleViewHolder).image)
+                        .into(vh.image)
                 }
             }
         }
     }
-    
+
     override fun getItemCount() = dataSet.size
 }

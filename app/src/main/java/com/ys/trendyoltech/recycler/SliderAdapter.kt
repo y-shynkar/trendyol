@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.viewpager.widget.PagerAdapter
-import com.bumptech.glide.Glide
+import com.squareup.picasso.Picasso
 import com.ys.trendyoltech.R
 import java.util.*
 
-class SliderAdapter(val context: Context, private var imagesUrls: List<String>) : PagerAdapter() {
+class SliderAdapter(context: Context, private var imagesUrls: List<String>) : PagerAdapter() {
 
     private var mLayoutInflater: LayoutInflater =
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -25,7 +25,7 @@ class SliderAdapter(val context: Context, private var imagesUrls: List<String>) 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val itemView: View = mLayoutInflater.inflate(R.layout.item, container, false)
         val imageView = itemView.findViewById<View>(R.id.ivBanner) as ImageView
-        Glide.with(context).load(imagesUrls[position]).into(imageView)
+        Picasso.get().load(imagesUrls[position]).into(imageView)
         Objects.requireNonNull(container).addView(itemView)
         return itemView
     }
